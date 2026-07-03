@@ -97,7 +97,7 @@ CREATE TABLE movie_cast (
 
 -- Loading data from CSV files into the tables
 
-\copy movie(
+COPY movie(
     movie_id,
     original_title,
     average_rating,
@@ -113,53 +113,53 @@ CREATE TABLE movie_cast (
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/movie.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy genre(genre_name, genre_id)
+COPY genre(genre_name, genre_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/genre.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy production_company(company_name, company_id)
+COPY production_company(company_name, company_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/company.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy language(language_name, language_id)
+COPY language(language_name, language_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/language.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy director(director_name, director_id)
+COPY director(director_name, director_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/director.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy writer(writer_name, writer_id)
+COPY writer(writer_name, writer_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/writer.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy cast_member(cast_name, cast_id)
+COPY cast_member(cast_name, cast_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Tables/cast.csv'
 WITH (FORMAT csv, HEADER true);
 
 
 -- Loading data from CSV files into the relationship tables
 
-\copy movie_genre(movie_id, genre_id)
+COPY movie_genre(movie_id, genre_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_genre.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy movie_production_company(movie_id, company_id)
+COPY movie_production_company(movie_id, company_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_production_company.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy movie_language(movie_id, language_id)
+COPY movie_language(movie_id, language_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_language.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy movie_director(movie_id, director_id)
+COPY movie_director(movie_id, director_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_director.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy movie_writer(movie_id, writer_id)
+COPY movie_writer(movie_id, writer_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_writer.csv'
 WITH (FORMAT csv, HEADER true);
 
-\copy movie_cast(movie_id, cast_id)
+COPY movie_cast(movie_id, cast_id)
 FROM '/Users/adi/Library/CloudStorage/OneDrive-UniversityofBath/CS/Dissertation/Code/Work/Dataset/Relationship_tables/movie_cast.csv'
 WITH (FORMAT csv, HEADER true);
