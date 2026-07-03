@@ -12,4 +12,24 @@ const con = new Client({
     database: 'moviedb',
 })
 
-con.connect().then(()=> console.log('Connected to the database')) // Establishing connection to the database
+// Establishing connection to the database
+con.connect().then(()=> console.log('Connected to the database')) 
+
+// Defines a GET endpoint at the path '/fetchMovies' that will be used to fetch all movies from the database
+app.get('/fetchMovies', (req, res) => { 
+
+    const movie_fetch_query = 'SELECT * FROM movie LIMIT 5' // SQL query to fetch all movies from the movie table
+    con.query(movie_fetch_query, (err, result) => {
+        if (err) {
+            res.send(err)
+        }
+        else{
+            res.send(result.rows) // Sends the result of the query back to the client as a JSON response
+        }
+    })
+})
+
+// Starts the server and listens on port 3000
+app.listen(3000, () => {
+    console.log('Server is running on port 3000') 
+})
