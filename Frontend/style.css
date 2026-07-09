@@ -1,3 +1,9 @@
+#movieList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
 .movieContainer {
     display: flex;
     flex-direction: row;
@@ -10,7 +16,6 @@
 .moviePoster {
     flex: 0 0 120px;
     height: 120px;
-    width: 
     padding-left: 10px;
 
 }

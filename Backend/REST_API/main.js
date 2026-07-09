@@ -19,7 +19,7 @@ con.connect().then(()=> console.log('Connected to the database'))
 
 // Defines a GET endpoint at the path '/fetchMovies' that will be used to fetch all movies from the database
 app.get('/fetchMovies', (req, res) => { 
-    const movie_fetch_query = 'SELECT * FROM movie LIMIT 5' // SQL query to fetch all movies from the movie table
+    const movie_fetch_query = 'SELECT * FROM movie LIMIT 150' // SQL query to fetch all movies from the movie table
     const result = con.query(movie_fetch_query, (err, result) => {
         if (err) {
             res.send(err)
