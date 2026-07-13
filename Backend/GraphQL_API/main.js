@@ -1,4 +1,5 @@
-const express = require('express')
+const express = require('express');
+const cors = require('cors');
 
 //Importing the Sequelize class from the installed 'sequelize' package
 const {Sequelize, DataTypes} = require('sequelize')
@@ -74,7 +75,7 @@ const resolvers = {
     Query: {
         hello: () => 'Hello from GraphQL',
         movies: async () => {
-            return await Movie.findAll({ limit: 10 })
+            return await Movie.findAll({ limit: 150 })
         }
     }
 }
@@ -91,6 +92,7 @@ async function startServer(){ //async = This function may take some time to fini
 
         await server.start()
 
+        app.use(cors());
         app.use(express.json())
         app.use('/graphql', expressMiddleware(server))
 
