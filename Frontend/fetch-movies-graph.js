@@ -44,11 +44,11 @@ async function retrieveMovieDetails() {
                 movieList.appendChild(movieCard);
             }
 
-            movieCard.querySelector('.movieTitle').textContent = movie.title;
+            movieCard.querySelector('.movieTitle').textContent = movie.original_title;
             movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
             movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
             movieCard.querySelector('.adultRating').textContent = movie.adult;
-            movieCard.querySelector('.rating').textContent = movie.vote_average ?? 'NA';
+            movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
             movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
             movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
 
