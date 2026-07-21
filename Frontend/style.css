@@ -1,7 +1,8 @@
 .pageLayout {
-    display: grid;
+    display: grid;    
     grid-template-columns: 1fr 1fr;
     gap: 40px;
+    align-items: start;
 }
 
 #movieList {
@@ -53,3 +54,124 @@
     margin: 0;
 }
 
+.filterBar {
+    background-color: burlywood;
+    padding: 15px;
+    position: sticky;
+    top: 20px;
+    overflow-y: auto;
+}
+
+.fitlerBar h2 {
+    text-align: center;
+}
+
+.filterTab {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.filterTab button {
+    padding: 3px 9px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.filterDropdownButton {
+    width: 100%;
+    text-align: left;
+    padding: 12px 14px;
+    border: 1px solid #bbb;
+    border-radius: 6px;
+    background-color: #fafafa;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.filterDropdownButton::after {
+    content: "▼";
+    float: right;
+    font-size: 12px;
+}
+
+.filterDropdownContent {
+    display: none;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    padding: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.filterGroup.open .filterDropdownContent {
+    display: block;
+}
+
+.filterSearch {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.filterOption {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filterButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.filterButtons button {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#applyFilters {
+    background-color: #222;
+    color: white;
+}
+
+#clearFilters {
+    background-color: #ddd;
+    color: black;
+}
+
+.noResults {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 40px;
+}
+
+@media (max-width: 1200px) {
+    .pageLayout {
+        grid-template-columns: 1fr;
+    }
+
+    .filterPanel {
+        position: static;
+        max-height: none;
+    }
+
+    .movieDetails {
+        width: 100%;
+    }
+}
