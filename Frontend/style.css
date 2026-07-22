@@ -62,7 +62,7 @@
     overflow-y: auto;
 }
 
-.fitlerBar h2 {
+.filterBar h2 {
     text-align: center;
 }
 
@@ -174,4 +174,21 @@
     .movieDetails {
         width: 100%;
     }
+}
+
+.loadingIndicator {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    font-weight: bold;
+}
+
+#scrollSentinel {
+    height: 1px;
+}
+
+.noResults {
+    padding: 20px;
+    text-align: center;
+    font-weight: bold;
 }
