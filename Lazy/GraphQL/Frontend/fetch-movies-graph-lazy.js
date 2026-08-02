@@ -65,6 +65,7 @@
 
 // retrieveMovieDetails()
 
+const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
 const PAGE_SIZE = 20;
 
 let currentOffset = 0;
@@ -100,7 +101,8 @@ const filterDefinitions = [
 ];
 
 async function graphqlRequest(query, variables = {}) {
-    const response = await fetch('http://localhost:4001/graphql', {
+   
+    const response = await fetch('http://localhost:4000/graphql', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -108,12 +110,12 @@ async function graphqlRequest(query, variables = {}) {
         body: JSON.stringify({ query, variables })
     });
 
+    const result = await response.json();
+
     if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
-    const result = await response.json();
-
+   
     if (result.errors) {
         console.error(result.errors);
         throw new Error('GraphQL query failed');
@@ -327,66 +329,66 @@ async function retrieveMovieDetails(filters = activeFilters, reset = false) {
 function renderMovies(movies, append = false) {
 
     const movieList = document.getElementById("movieList");
-    const originalCard = document.querySelector(".movieContainer");
-    const movieCard = originalCard.cloneNode(true);
 
-    if(!append){
+    if (!append) {
 
         movieList.querySelectorAll(".movieContainer").forEach(card => {
             card.remove();
         });
 
+        const noResults = movieList.querySelector(".noResults");
+
+        if (noResults) {
+            noResults.remove();
+        }
     }
 
-    document.querySelectorAll(".filterSearch").forEach(input=>{
-        input.value="";
-    });
+    if (movies.length === 0) {
 
-    document.querySelectorAll(".filterOption").forEach(option=>{
-        option.style.display="flex";
-    });
-
-    if(movies.length===0){
-
-        if(!append){
-
-            movieList.innerHTML="<div class='noResults'>No movies found</div>";
-
+        if (!append) {
+            movieList.innerHTML = `<div class="noResults">No movies found</div>`;
         }
 
         return;
-
     }
 
-    movies.forEach(movie=>{
+    movies.forEach(movie => {
 
-        const movieCard = originalCard.cloneNode(true);
+        const card = document.createElement("div");
+        card.className = "movieContainer";
 
-        movieCard.querySelector(".movieTitle").textContent=movie.original_title ?? "NA";
-        movieCard.querySelector(".releaseDate").textContent=movie.release_date ?? "NA";
-        movieCard.querySelector(".runtime").textContent=movie.runtime ? `${movie.runtime} mins` : "NA";
-        movieCard.querySelector(".adultRating").textContent=movie.adult ?? "NA";
-        movieCard.querySelector(".rating").textContent=movie.average_rating ?? "NA";
-        movieCard.querySelector(".revenue").textContent=movie.revenue ?? "NA";
-        movieCard.querySelector(".status").textContent=movie.status ?? "NA";
+        card.innerHTML = `
+            <div class="moviePoster">
+                <img
+                    src="${movie.poster_path ? IMAGE_URL + movie.poster_path : ""}"
+                    alt="${movie.original_title || "Movie Poster"}"
+                    loading="lazy">
+            </div>
 
-        const movieImage = movieCard.querySelector(".moviePoster img");
+            <div class="movieDetails">
 
-        movieImage.src = movie.poster_path
-        ? `https://image.tmdb.org/t/p/original/${movie.poster_path}`
-        : "";
+                <h2 class="movieTitle">${movie.original_title ?? "NA"}</h2>
 
-        movieImage.alt = movie.original_title ?? "Movie Poster";
+                <div class="movieAttributes">
 
-        movieImage.loading="lazy";
+                    <h4>${movie.release_date ?? "NA"}</h4>
+                    <h4>${movie.runtime ? movie.runtime + " mins" : "NA"}</h4>
+                    <h4>${movie.adult ?? "NA"}</h4>
+                    <h4>${movie.average_rating ?? "NA"}</h4>
+                    <h4>${movie.revenue ?? "NA"}</h4>
+                    <h4>${movie.status ?? "NA"}</h4>
 
-        movieList.appendChild(movieCard);
+                </div>
+
+            </div>
+        `;
+
+        movieList.appendChild(card);
 
     });
 
     movieList.appendChild(document.getElementById("loadingIndicator"));
     movieList.appendChild(document.getElementById("scrollSentinel"));
-
 }
 
 function setLoadingIndicator(show){
@@ -462,11 +464,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     loadFilterOptions();
 
-    await retrieveMovieDetails({
-        genres: [],
-        directors: [],
-        cast: []
-    }, true);
+    const EMPTY_FILTERS = {
+    genres: [],
+    directors: [],
+    cast: []
+    };
+    
+    await retrieveMovieDetails(EMPTY_FILTERS, true);
 
     setupInfiniteScroll();
 });
