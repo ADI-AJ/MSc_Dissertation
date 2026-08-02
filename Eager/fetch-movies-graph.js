@@ -1,69 +1,4 @@
-// async function retrieveMovieDetails() {
-//     try {
-//         const response = await fetch('http://localhost:4000/graphql', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//             body: JSON.stringify({
-//                 query:`
-//                     query {
-//                         movies  {
-//                             movie_id
-//                             original_title
-//                             release_date
-//                             runtime
-//                             adult
-//                             average_rating
-//                             revenue
-//                             status
-//                             poster_path
-//                         }                        
-//                     }`
-//             })
-//         });
-        
-//         if (!response.ok){
-//             throw new Error('HTTP error! Status: $(response.status)');
-//         }
-
-//         const result = await response.json();
-//         const movies = result.data.movies;
-
-//         const movieList = document.getElementById('movieList');
-//         const originalCard = document.querySelector('.movieContainer');
-
-//         movies.forEach ( (movie, index) => {
-//             let movieCard;
-
-//             if (index===0) {
-//                 movieCard = originalCard;
-//             }
-//             else {
-//                 movieCard = originalCard.cloneNode(true);
-//                 movieList.appendChild(movieCard);
-//             }
-
-//             movieCard.querySelector('.movieTitle').textContent = movie.original_title;
-//             movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
-//             movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
-//             movieCard.querySelector('.adultRating').textContent = movie.adult;
-//             movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
-//             movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
-//             movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
-
-//             const movieImage = movieCard.querySelector('.moviePoster img');
-//             movieImage.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
-//             movieImage.alt = movie.title;
-//         }
-//         );
-//     }
-//     catch (error){
-//         console.error('Error fetching movies:', error);
-//     }
-// }
-
-// retrieveMovieDetails()
+const IMAGE_URL = "https://image.tmdb.org/t/p/w185/";
 
 const filterDefinitions = [
     {
@@ -241,6 +176,8 @@ function getSelectedFilters() {
 }
 
 async function retrieveMovieDetails(filters = { genres: [], directors: [], cast: [] }) {
+    console.log("retrieveMovieDetails called")
+    
     try {
         const query = `
             query GetMovies($filters: MovieFilterInput) {
@@ -259,50 +196,109 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
         `;
 
         const data = await graphqlRequest(query, { filters });
+        console.log(data)
         renderMovies(data.movies);
     } catch (error) {
         console.error('Error fetching movies:', error);
     }
 }
 
+// function renderMovies(movies) {
+//     const movieList = document.getElementById('movieList');
+//     const originalCard = document.querySelector('.movieContainer');
+
+//     if (!movieList || !originalCard) {
+//         console.error('movieList or movieContainer not found in HTML');
+//         return;
+//     }
+
+//     movieList.innerHTML = '';
+
+//     if (!movies || movies.length === 0) {
+//         movieList.innerHTML = `<div class="noResults">No movies found</div>`;
+//         return;
+//     }
+
+//     movies.forEach((movie) => {
+//         const movieCard = originalCard.cloneNode(true);
+
+//         movieCard.querySelector('.movieTitle').textContent = movie.original_title ?? 'NA';
+//         movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
+//         movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
+//         movieCard.querySelector('.adultRating').textContent = movie.adult ?? 'NA';
+//         movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
+//         movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
+//         movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
+
+//         const movieImage = movieCard.querySelector('.moviePoster img');
+
+//         if (movie.poster_path) {
+//             movieImage.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
+//         } else {
+//             movieImage.src = '';
+//         }
+
+//         movieImage.alt = movie.original_title ?? 'Movie Poster';
+
+//         movieList.appendChild(movieCard);
+//     });
+// }
+
 function renderMovies(movies) {
-    const movieList = document.getElementById('movieList');
-    const originalCard = document.querySelector('.movieContainer');
 
-    if (!movieList || !originalCard) {
-        console.error('movieList or movieContainer not found in HTML');
-        return;
-    }
 
-    movieList.innerHTML = '';
 
-    if (!movies || movies.length === 0) {
+    const movieList = document.getElementById("movieList");
+    
+    console.log("Movies length:", movies.length);
+    console.log("First movie:", movies[0]);
+
+    movies.slice(0, 5).forEach(movie => {
+        console.log(movie.original_title);
+    });
+
+    movieList.innerHTML = "";
+
+    if (movies.length === 0) {
         movieList.innerHTML = `<div class="noResults">No movies found</div>`;
         return;
     }
 
-    movies.forEach((movie) => {
-        const movieCard = originalCard.cloneNode(true);
+    // movies.
+    movies.slice(0,20).forEach(movie => {
 
-        movieCard.querySelector('.movieTitle').textContent = movie.original_title ?? 'NA';
-        movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
-        movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
-        movieCard.querySelector('.adultRating').textContent = movie.adult ?? 'NA';
-        movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
-        movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
-        movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
+        const card = document.createElement("div");
+        card.className = "movieContainer";
 
-        const movieImage = movieCard.querySelector('.moviePoster img');
+        card.innerHTML = `
+            <div class="moviePoster">
+                <img
+                    src="${movie.poster_path ? IMAGE_URL + movie.poster_path : ""}"
+                    alt="${movie.original_title || "Movie Poster"}">
+            </div>
 
-        if (movie.poster_path) {
-            movieImage.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
-        } else {
-            movieImage.src = '';
-        }
+            <div class="movieDetails">
 
-        movieImage.alt = movie.original_title ?? 'Movie Poster';
+                <h2 class="movieTitle">${movie.original_title ?? "NA"}</h2>
 
-        movieList.appendChild(movieCard);
+                <div class="movieAttributes">
+
+                    <h4>${movie.release_date ?? "NA"}</h4>
+                    <h4>${movie.runtime ? movie.runtime + " mins" : "NA"}</h4>
+                    <h4>${movie.adult ?? "NA"}</h4>
+                    <h4>${movie.average_rating ?? "NA"}</h4>
+                    <h4>${movie.revenue ?? "NA"}</h4>
+                    <h4>${movie.status ?? "NA"}</h4>
+
+                </div>
+
+            </div>
+        `;
+
+        movieList.appendChild(card);
+
+        console.log(movieList.children.length);
+
     });
 }
 
@@ -314,40 +310,39 @@ document.addEventListener('click', (event) => {
     }
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    const applyButton = document.getElementById('applyFilter');
-    const clearButton = document.getElementById('clearFilter');
 
-    if (applyButton) {
-        applyButton.addEventListener('click', () => {
-            const filters = getSelectedFilters();
-            retrieveMovieDetails(filters);
-        });
-    }
+const applyButton = document.getElementById('applyFilter');
+const clearButton = document.getElementById('clearFilter');
 
-    if (clearButton) {
-        clearButton.addEventListener('click', () => {
-            document.querySelectorAll('.filterBar input[type="checkbox"]').forEach(cb => {
-                cb.checked = false;
-            });
-
-            document.querySelectorAll('.filterGroup').forEach(group => {
-                const label = filterDefinitions.find(def => def.key === group.dataset.filterKey)?.label || 'Filter';
-                updateDropdownLabel(group, label);
-            });
-
-            retrieveMovieDetails({
-                genres: [],
-                directors: [],
-                cast: []
-            });
-        });
-    }
-
-    loadFilterOptions();
-    retrieveMovieDetails({
-        genres: [],
-        directors: [],
-        cast: []
+if (applyButton) {
+    applyButton.addEventListener('click', () => {
+        const filters = getSelectedFilters();
+        retrieveMovieDetails(filters);
     });
+}
+
+if (clearButton) {
+    clearButton.addEventListener('click', () => {
+        document.querySelectorAll('.filterBar input[type="checkbox"]').forEach(cb => {
+            cb.checked = false;
+        });
+
+        document.querySelectorAll('.filterGroup').forEach(group => {
+            const label = filterDefinitions.find(def => def.key === group.dataset.filterKey)?.label || 'Filter';
+            updateDropdownLabel(group, label);
+        });
+
+        retrieveMovieDetails({
+            genres: [],
+            directors: [],
+            cast: []
+        });
+    });
+}
+
+loadFilterOptions();
+retrieveMovieDetails({
+    genres: [],
+    directors: [],
+    cast: []
 });
