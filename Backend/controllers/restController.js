@@ -176,7 +176,7 @@ const fetchMovies = async (req, res) => {
 
             subQuery: false,
 
-            limit: 150,
+            limit: 1500,
 
             order: [
 
@@ -185,7 +185,7 @@ const fetchMovies = async (req, res) => {
             ]
 
         });
-
+        
         res.json(movies);
 
     }

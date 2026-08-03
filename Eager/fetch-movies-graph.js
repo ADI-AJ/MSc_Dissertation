@@ -176,7 +176,6 @@ function getSelectedFilters() {
 }
 
 async function retrieveMovieDetails(filters = { genres: [], directors: [], cast: [] }) {
-    console.log("retrieveMovieDetails called")
     
     try {
         const query = `
@@ -196,66 +195,17 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
         `;
 
         const data = await graphqlRequest(query, { filters });
-        console.log(data)
         renderMovies(data.movies);
     } catch (error) {
         console.error('Error fetching movies:', error);
     }
-}
-
-// function renderMovies(movies) {
-//     const movieList = document.getElementById('movieList');
-//     const originalCard = document.querySelector('.movieContainer');
-
-//     if (!movieList || !originalCard) {
-//         console.error('movieList or movieContainer not found in HTML');
-//         return;
-//     }
-
-//     movieList.innerHTML = '';
-
-//     if (!movies || movies.length === 0) {
-//         movieList.innerHTML = `<div class="noResults">No movies found</div>`;
-//         return;
-//     }
-
-//     movies.forEach((movie) => {
-//         const movieCard = originalCard.cloneNode(true);
-
-//         movieCard.querySelector('.movieTitle').textContent = movie.original_title ?? 'NA';
-//         movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
-//         movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
-//         movieCard.querySelector('.adultRating').textContent = movie.adult ?? 'NA';
-//         movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
-//         movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
-//         movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
-
-//         const movieImage = movieCard.querySelector('.moviePoster img');
-
-//         if (movie.poster_path) {
-//             movieImage.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
-//         } else {
-//             movieImage.src = '';
-//         }
-
-//         movieImage.alt = movie.original_title ?? 'Movie Poster';
-
-//         movieList.appendChild(movieCard);
-//     });
-// }
+}   
 
 function renderMovies(movies) {
 
 
 
     const movieList = document.getElementById("movieList");
-    
-    console.log("Movies length:", movies.length);
-    console.log("First movie:", movies[0]);
-
-    movies.slice(0, 5).forEach(movie => {
-        console.log(movie.original_title);
-    });
 
     movieList.innerHTML = "";
 
@@ -264,8 +214,7 @@ function renderMovies(movies) {
         return;
     }
 
-    // movies.
-    movies.slice(0,20).forEach(movie => {
+    movies.forEach(movie => {
 
         const card = document.createElement("div");
         card.className = "movieContainer";
@@ -296,8 +245,6 @@ function renderMovies(movies) {
         `;
 
         movieList.appendChild(card);
-
-        console.log(movieList.children.length);
 
     });
 }
