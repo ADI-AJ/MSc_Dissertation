@@ -1,12 +1,14 @@
 const API_URL = "http://localhost:4000";
 const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
-
+const API_TYPE = "REST";
+const LOADING_TYPE = "Lazy";
 const PAGE_SIZE = 20;
 
 let currentOffset = 0;
 let isLoading = false;
 let hasMoreMovies = true;
 let observer = null;
+let firstRenderCompleted = false;
 
 const EMPTY_FILTERS = {
     genres: [],
@@ -257,6 +259,17 @@ function renderMovies(movies, append = false) {
 
     movieList.appendChild(document.getElementById("loadingIndicator"));
     movieList.appendChild(document.getElementById("scrollSentinel"));
+
+    if (!firstRenderCompleted) {
+
+        firstRenderCompleted = true;
+
+        setTimeout(() => {
+
+            sendFrontendMetrics();
+
+        }, 1000);
+    }
 }
 
 function setLoadingIndicator(show) {
@@ -327,6 +340,96 @@ document.addEventListener("click", event => {
     }
 
 });
+
+let fcp = null;
+let lcp = null;
+
+
+// Measure FCP
+const paintObserver = new PerformanceObserver((entryList) => {
+
+    const entries = entryList.getEntries();
+
+    entries.forEach(entry => {
+
+        if (entry.name === "first-contentful-paint") {
+
+            fcp = entry.startTime;
+
+        }
+
+    });
+
+});
+
+
+paintObserver.observe({
+    type: "paint",
+    buffered: true
+});
+
+
+// Measure LCP
+const lcpObserver = new PerformanceObserver((entryList) => {
+
+    const entries = entryList.getEntries();
+
+    const lastEntry = entries[entries.length - 1];
+
+    lcp = lastEntry.startTime;
+
+});
+
+
+lcpObserver.observe({
+    type: "largest-contentful-paint",
+    buffered: true
+});
+
+async function sendFrontendMetrics() {
+
+    try {
+
+        await fetch(`${API_URL}/frontend-metrics`, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                api: API_TYPE,
+
+                loadingType: LOADING_TYPE,
+
+                fcp: fcp ? fcp.toFixed(2) : null,
+
+                lcp: lcp ? lcp.toFixed(2) : null
+
+            })
+
+        });
+
+
+        console.log("Frontend metrics sent", {
+            fcp,
+            lcp
+        });
+
+
+    }
+    catch(error) {
+
+        console.error(
+            "Frontend metrics error:",
+            error
+        );
+
+    }
+
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
 

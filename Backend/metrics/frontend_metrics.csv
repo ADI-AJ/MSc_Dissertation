@@ -1,0 +1,3 @@
+RequestNo, Timestamp, API, LoadingType, FCP(ms), LCP(ms)
+1,2026-08-05T20:57:01.730Z,REST,Lazy,76.00,7576.00
+2,2026-08-05T20:57:16.495Z,REST,Lazy,1804.00,8636.00
