@@ -173,7 +173,8 @@ async function retrieveMovieDetails(filters = activeFilters, reset = false) {
         const response = await fetch(`${API_URL}/fetchMovies`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "x-loading-type": LOADING_TYPE
             },
             body: JSON.stringify({
                 genres: activeFilters.genres,

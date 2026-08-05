@@ -154,7 +154,8 @@ async function retrieveMovieDetails(filters = EMPTY_FILTERS) {
         const response = await fetch(`${API_URL}/fetchMovies`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "x-loading-type": LOADING_TYPE
             },
             body: JSON.stringify(filters)
         });
