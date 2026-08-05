@@ -3,6 +3,14 @@
 const { logBackendMetrics } = require("../utils/csvLogger");
 
 function metricsMiddleware(req, res, next) {
+    if (req.originalUrl.includes("/frontend-metrics")) { //Ignores frontend_metrics log in backend metrics csv file
+        return next();
+    }
+
+    if (req.originalUrl.includes("/filter-options")) { //Ignore filter loading
+        return next();
+    }
+
     const startTime = process.hrtime.bigint();
     const originalSend = res.send;
 

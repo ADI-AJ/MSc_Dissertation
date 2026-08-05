@@ -1,6 +1,9 @@
 const API_URL = "http://localhost:4000";
 const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
 
+const API_TYPE = "REST"
+const LOADING_TYPE = "Eager"
+
 const EMPTY_FILTERS = {
     genres: [],
     directors: [],
@@ -209,8 +212,13 @@ function renderMovies(movies) {
         `;
 
         movieList.appendChild(card);
-
     });
+
+    setTimeout(() => {
+
+        sendFrontendMetrics();
+
+    }, 1000);
 }
 
 document.getElementById("applyFilter").addEventListener("click", () => {
@@ -254,46 +262,78 @@ document.addEventListener("click", event => {
 loadFilterOptions();
 retrieveMovieDetails(EMPTY_FILTERS);
 
-// async function retrieveMovieDetails() {
-//     try {
-//         const response = await fetch('http://localhost:3000/fetchMovies');
-        
-//         if (!response.ok){
-//             throw new Error('HTTP error! Status: $(response.status)');
-//         }
+let fcp = null;
+let lcp = null;
 
-//         const movies = await response.json();
-//         const movieList = document.getElementById('movieList');
-//         const originalCard = document.querySelector('.movieContainer');
 
-//         movies.forEach ( (movie, index) => {
-//             let movieCard;
+// Measure FCP
+const paintObserver = new PerformanceObserver((entryList) => {
+    const entries = entryList.getEntries();
+    entries.forEach(entry => {
+        if (entry.name === "first-contentful-paint") {
+            fcp = entry.startTime;
+        }
+    });
+});
 
-//             if (index===0) {
-//                 movieCard = originalCard;
-//             }
-//             else {
-//                 movieCard = originalCard.cloneNode(true);
-//                 movieList.appendChild(movieCard);
-//             }
+paintObserver.observe({
+    type: "paint",
+    buffered: true
+});
 
-//             movieCard.querySelector('.movieTitle').textContent = movie.original_title;
-//             movieCard.querySelector('.releaseDate').textContent = movie.release_date ?? 'NA';
-//             movieCard.querySelector('.runtime').textContent = movie.runtime ? `${movie.runtime} mins` : 'NA';
-//             movieCard.querySelector('.adultRating').textContent = movie.adult;
-//             movieCard.querySelector('.rating').textContent = movie.average_rating ?? 'NA';
-//             movieCard.querySelector('.revenue').textContent = movie.revenue ?? 'NA';
-//             movieCard.querySelector('.status').textContent = movie.status ?? 'NA';
 
-//             const movieImage = movieCard.querySelector('.moviePoster img');
-//             movieImage.src = `https://image.tmdb.org/t/p/original/${movie.poster_path}`;
-//             movieImage.alt = movie.title;
-//         }
-//         );
-//     }
-//     catch (error){
-//         console.error('Error fetching movies:', error);
-//     }
-// }
+// Measure LCP
+const lcpObserver = new PerformanceObserver((entryList) => {
+    const entries = entryList.getEntries();
+    const lastEntry = entries[entries.length - 1];
+    lcp = lastEntry.startTime;
+});
 
-// retrieveMovieDetails()
+lcpObserver.observe({
+    type: "largest-contentful-paint",
+    buffered: true
+});
+
+
+async function sendFrontendMetrics() {
+
+    try {
+
+        await fetch(`${API_URL}/frontend-metrics`, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                api: API_TYPE,
+
+                loadingType: LOADING_TYPE,
+
+                fcp: fcp ? fcp.toFixed(2) : null,
+
+                lcp: lcp ? lcp.toFixed(2) : null
+
+            })
+
+        });
+
+        console.log("Frontend metrics sent", {
+            fcp,
+            lcp
+        });
+
+    }
+    catch(error) {
+
+        console.error(
+            "Frontend metrics error:",
+            error
+        );
+
+    }
+
+}
