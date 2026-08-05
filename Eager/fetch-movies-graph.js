@@ -1,4 +1,7 @@
+const API_URL = "http://localhost:4000";
 const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
+const API_TYPE = "GraphQL";
+const LOADING_TYPE = "Eager";
 
 const filterDefinitions = [
     {
@@ -203,8 +206,6 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
 
 function renderMovies(movies) {
 
-
-
     const movieList = document.getElementById("movieList");
 
     movieList.innerHTML = "";
@@ -247,6 +248,12 @@ function renderMovies(movies) {
         movieList.appendChild(card);
 
     });
+
+    setTimeout(() => {
+
+        sendFrontendMetrics();
+
+    }, 1000);
 }
 
 document.addEventListener('click', (event) => {
@@ -285,6 +292,90 @@ if (clearButton) {
             cast: []
         });
     });
+}
+
+let fcp = null;
+let lcp = null;
+const paintObserver = new PerformanceObserver((entryList) => {
+
+    const entries = entryList.getEntries();
+
+    entries.forEach(entry => {
+
+        if (entry.name === "first-contentful-paint") {
+
+            fcp = entry.startTime;
+
+        }
+
+    });
+
+});
+
+
+paintObserver.observe({
+    type: "paint",
+    buffered: true
+});
+
+const lcpObserver = new PerformanceObserver((entryList) => {
+
+    const entries = entryList.getEntries();
+
+    const lastEntry = entries[entries.length - 1];
+
+    lcp = lastEntry.startTime;
+
+});
+
+
+lcpObserver.observe({
+    type: "largest-contentful-paint",
+    buffered: true
+});
+
+async function sendFrontendMetrics() {
+
+    try {
+
+        await fetch(`${API_URL}/frontend-metrics`, {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                api: API_TYPE,
+
+                loadingType: LOADING_TYPE,
+
+                fcp: fcp ? fcp.toFixed(2) : null,
+
+                lcp: lcp ? lcp.toFixed(2) : null
+
+            })
+
+        });
+
+
+        console.log("Frontend metrics sent", {
+            fcp,
+            lcp
+        });
+
+    }
+    catch(error) {
+
+        console.error(
+            "Frontend metrics error:",
+            error
+        );
+
+    }
+
 }
 
 loadFilterOptions();
