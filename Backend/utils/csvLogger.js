@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const metricsFolder = path.join(__dirname, "..", "metrics");
+const metricsFolder = path.join(__dirname, "..", "..", "metrics");
 const backendCsv = path.join(metricsFolder, "backend_metrics.csv");
 
 const CSV_HEADER = "RequestNo,Timestamp,API,LoadingType,Method,Endpoint,StatusCode,ResponseTime(ms),ResponseSize(Bytes)\n";

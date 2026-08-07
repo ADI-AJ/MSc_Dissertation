@@ -3,7 +3,7 @@ const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
 
 const API_TYPE = "REST"
 const LOADING_TYPE = "Eager"
-
+const EAGER_LIMIT = 15000;
 const EMPTY_FILTERS = {
     genres: [],
     directors: [],
@@ -157,7 +157,11 @@ async function retrieveMovieDetails(filters = EMPTY_FILTERS) {
                 "Content-Type": "application/json",
                 "x-loading-type": LOADING_TYPE
             },
-            body: JSON.stringify(filters)
+            body: JSON.stringify({
+                ...filters,
+                limit: EAGER_LIMIT,
+                offset:0
+            })
         });
 
         const movies = await response.json();

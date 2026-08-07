@@ -183,8 +183,12 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
     
     try {
         const query = `
-            query GetMovies($filters: MovieFilterInput) {
-                movies(filters: $filters) {
+            query GetMovies($filters: MovieFilterInput, $limit:Int, $offset:Int) {
+                movies(
+                    filters: $filters,
+                    limit:$limit,
+                    offset:$offset
+                ) {
                     movie_id
                     original_title
                     release_date
@@ -198,7 +202,11 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
             }
         `;
 
-        const data = await graphqlRequest(query, { filters });
+        const data = await graphqlRequest(query, { 
+            filters,
+            limit: 15000,
+            offset:0 
+        });
         renderMovies(data.movies);
     } catch (error) {
         console.error('Error fetching movies:', error);

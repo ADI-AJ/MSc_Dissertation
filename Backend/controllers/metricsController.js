@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const metricsFolder = path.join(__dirname, "..", "metrics");
+const metricsFolder = path.join(__dirname, "..", "..", "metrics");
 const frontendCsv = path.join(metricsFolder, "frontend_metrics.csv");
 
 const CSV_HEADER =

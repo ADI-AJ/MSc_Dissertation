@@ -83,7 +83,9 @@ const fetchMovies = async (req, res) => {
         const {
             genres = [],
             directors = [],
-            cast = []
+            cast = [],
+            limit = 20,
+            offset = 0
         } = req.body;
 
         const include = [];
@@ -176,7 +178,8 @@ const fetchMovies = async (req, res) => {
 
             subQuery: false,
 
-            limit: 1500,
+            limit,
+            offset,
 
             order: [
 
