@@ -11,6 +11,15 @@ function metricsMiddleware(req, res, next) {
         return next();
     }
 
+    if (
+        req.originalUrl.includes("/graphql") &&
+        req.body &&
+        req.body.query &&
+        req.body.query.includes("filterOptions")
+    ) {
+        return next();
+    }
+
     const startTime = process.hrtime.bigint();
     const originalSend = res.send;
 

@@ -262,7 +262,7 @@ function renderMovies(movies) {
 
         sendFrontendMetrics();
 
-    }, 1000);
+    }, 5000);
 }
 
 document.addEventListener('click', (event) => {

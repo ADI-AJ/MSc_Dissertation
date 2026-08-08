@@ -223,7 +223,7 @@ function renderMovies(movies) {
 
         sendFrontendMetrics();
 
-    }, 1000);
+    }, 3000);
 }
 
 document.getElementById("applyFilter").addEventListener("click", () => {
