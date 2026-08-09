@@ -21,25 +21,38 @@ function metricsMiddleware(req, res, next) {
     }
 
     const startTime = process.hrtime.bigint();
-    const originalSend = res.send;
+    const originalWrite = res.write;
+    const originalEnd = res.end;
 
     let responseSize = 0;
 
-    res.send = function (body) {
-        if (body) {
-            if (Buffer.isBuffer(body)) {
-                responseSize = body.length;
-            }
-            else {
-                responseSize = Buffer.byteLength(body.toString());
+    res.write = function (chunk, encoding, cb) {
+        if (chunk) {
+            if (Buffer.isBuffer(chunk)) {
+                responseSize += chunk.length;
+            } else {
+                responseSize += Buffer.byteLength(chunk, typeof encoding === "string" ? encoding : "utf8");
             }
         }
-        return originalSend.call(this, body);
+        return originalWrite.apply(this, arguments);
+    };
+
+    res.end = function (chunk, encoding, cb) {
+        if (chunk && typeof chunk !== "function") {
+            if (Buffer.isBuffer(chunk)) {
+                responseSize += chunk.length;
+            } else {
+                responseSize += Buffer.byteLength(chunk, typeof encoding === "string" ? encoding : "utf8");
+            }
+        }
+        return originalEnd.apply(this, arguments);
     };
 
     res.on("finish", () => {
         const endTime = process.hrtime.bigint();
         const responseTime = Number(endTime - startTime) / 1000000;
+        const contentLength = res.getHeader("content-length");
+        const finalResponseSize = responseSize || (contentLength ? parseInt(contentLength, 10) : 0);
 
         logBackendMetrics({
             timestamp: new Date().toISOString(),
@@ -51,7 +64,7 @@ function metricsMiddleware(req, res, next) {
             endpoint: req.originalUrl,
             statusCode: res.statusCode,
             responseTime: responseTime.toFixed(2),
-            responseSize
+            responseSize: finalResponseSize
         });
     });
 

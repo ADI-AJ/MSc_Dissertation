@@ -15,7 +15,7 @@ let activeFilters = {
 let isLoading = false;
 let hasMoreMovies = true;
 let observer = null;
-let firstRenderCompleted = false;
+// let firstRenderCompleted = false;
 
 const filterDefinitions = [
     {
@@ -49,11 +49,11 @@ async function graphqlRequest(query, variables = {}) {
         body: JSON.stringify({ query, variables })
     });
 
-    const result = await response.json();
-
     if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    const result = await response.json();
    
     if (result.errors) {
         console.error(result.errors);
@@ -329,16 +329,29 @@ function renderMovies(movies, append = false) {
     movieList.appendChild(document.getElementById("loadingIndicator"));
     movieList.appendChild(document.getElementById("scrollSentinel"));
 
-    if (!firstRenderCompleted) {
+    triggerMetricsOnRenderComplete();
+}
 
-        firstRenderCompleted = true;
+let firstRenderCompleted = false;
 
-        setTimeout(() => {
+async function triggerMetricsOnRenderComplete() {
+    if (firstRenderCompleted) return;
+    firstRenderCompleted = true;
 
+    const images = Array.from(document.querySelectorAll("#movieList img"));
+    await Promise.allSettled(images.map(img => {
+        if (!img.src || img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+            img.addEventListener("load", resolve, { once: true });
+            img.addEventListener("error", resolve, { once: true });
+        });
+    }));
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
             sendFrontendMetrics();
-
-        }, 1000);
-    }
+        });
+    });
 }
 
 function setLoadingIndicator(show){

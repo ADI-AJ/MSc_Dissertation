@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:4000";
-const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
+const IMAGE_URL = "https://image.tmdb.org/t/p/w92/";
 const API_TYPE = "GraphQL";
 const LOADING_TYPE = "Eager";
 
@@ -258,11 +258,29 @@ function renderMovies(movies) {
 
     });
 
-    setTimeout(() => {
+    triggerMetricsOnRenderComplete();
+}
 
-        sendFrontendMetrics();
+let firstRenderCompleted = false;
 
-    }, 5000);
+async function triggerMetricsOnRenderComplete() {
+    if (firstRenderCompleted) return;
+    firstRenderCompleted = true;
+
+    const images = Array.from(document.querySelectorAll("#movieList img"));
+    await Promise.allSettled(images.map(img => {
+        if (!img.src || img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+            img.addEventListener("load", resolve, { once: true });
+            img.addEventListener("error", resolve, { once: true });
+        });
+    }));
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            sendFrontendMetrics();
+        });
+    });
 }
 
 document.addEventListener('click', (event) => {

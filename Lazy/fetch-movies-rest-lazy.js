@@ -8,7 +8,7 @@ let currentOffset = 0;
 let isLoading = false;
 let hasMoreMovies = true;
 let observer = null;
-let firstRenderCompleted = false;
+// let firstRenderCompleted = false;
 
 const EMPTY_FILTERS = {
     genres: [],
@@ -233,7 +233,8 @@ function renderMovies(movies, append = false) {
             <div class="moviePoster">
                 <img
                     src="${movie.poster_path ? IMAGE_URL + movie.poster_path : ""}"
-                    alt="${movie.original_title || "Movie Poster"}">
+                    alt="${movie.original_title || "Movie Poster"}"
+                    loading="lazy">
             </div>
 
             <div class="movieDetails">
@@ -261,16 +262,29 @@ function renderMovies(movies, append = false) {
     movieList.appendChild(document.getElementById("loadingIndicator"));
     movieList.appendChild(document.getElementById("scrollSentinel"));
 
-    if (!firstRenderCompleted) {
+    triggerMetricsOnRenderComplete();
+}
 
-        firstRenderCompleted = true;
+let firstRenderCompleted = false;
 
-        setTimeout(() => {
+async function triggerMetricsOnRenderComplete() {
+    if (firstRenderCompleted) return;
+    firstRenderCompleted = true;
 
+    const images = Array.from(document.querySelectorAll("#movieList img"));
+    await Promise.allSettled(images.map(img => {
+        if (!img.src || img.complete) return Promise.resolve();
+        return new Promise(resolve => {
+            img.addEventListener("load", resolve, { once: true });
+            img.addEventListener("error", resolve, { once: true });
+        });
+    }));
+
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
             sendFrontendMetrics();
-
-        }, 1000);
-    }
+        });
+    });
 }
 
 function setLoadingIndicator(show) {
@@ -434,7 +448,7 @@ async function sendFrontendMetrics() {
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-    await loadFilterOptions();
+    loadFilterOptions();
 
     await retrieveMovieDetails(EMPTY_FILTERS, true);
 

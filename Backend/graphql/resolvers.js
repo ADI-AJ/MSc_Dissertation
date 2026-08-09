@@ -59,7 +59,7 @@ module.exports = {
 
         },
 
-        movies: async (_, { filters = {}, limit = 1500, offset = 0 }) => {
+        movies: async (_, { filters = {}, limit = 20, offset = 0 }) => {
 
             const {
                 genres = [],
