@@ -271,8 +271,11 @@ async function triggerMetricsOnRenderComplete() {
     if (firstRenderCompleted) return;
     firstRenderCompleted = true;
 
-    const images = Array.from(document.querySelectorAll("#movieList img"));
-    await Promise.allSettled(images.map(img => {
+    const viewportImages = Array.from(document.querySelectorAll("#movieList img")).filter(img => {
+        const rect = img.getBoundingClientRect();
+        return rect.top < window.innerHeight && rect.bottom > 0;
+    });
+    await Promise.allSettled(viewportImages.map(img => {
         if (!img.src || img.complete) return Promise.resolve();
         return new Promise(resolve => {
             img.addEventListener("load", resolve, { once: true });
