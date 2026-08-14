@@ -10,6 +10,22 @@ const EMPTY_FILTERS = {
     cast: []
 };
 
+function getFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const parseIds = key => {
+        const value = params.get(key);
+        return value
+            ? value.split(",").map(Number).filter(n => !Number.isNaN(n))
+            : [];
+    };
+
+    return {
+        genres: parseIds("genres"),
+        directors: parseIds("directors"),
+        cast: parseIds("cast")
+    };
+}
+
 const filterDefinitions = [
     {
         key: "genres",
@@ -48,6 +64,28 @@ function renderAllFilters(data) {
     filterDefinitions.forEach(def => {
         const items = data[def.key] || [];
         container.appendChild(createFilterDropdown(def, items));
+    });
+
+    reflectURLFiltersInCheckboxes();
+}
+
+function reflectURLFiltersInCheckboxes() {
+    const urlFilters = getFiltersFromURL();
+
+    filterDefinitions.forEach(def => {
+        const ids = urlFilters[def.key];
+        if (!ids.length) return;
+
+        document.querySelectorAll(`input[name="${def.key}"]`).forEach(box => {
+            if (ids.includes(Number(box.value))) {
+                box.checked = true;
+            }
+        });
+
+        const wrapper = document.querySelector(`.filterGroup[data-filter-key="${def.key}"]`);
+        if (wrapper) {
+            updateDropdownLabel(wrapper, def.label);
+        }
     });
 }
 
@@ -283,7 +321,7 @@ document.addEventListener("click", event => {
 });
 
 loadFilterOptions();
-retrieveMovieDetails(EMPTY_FILTERS);
+retrieveMovieDetails(getFiltersFromURL());
 
 let fcp = null;
 let lcp = null;

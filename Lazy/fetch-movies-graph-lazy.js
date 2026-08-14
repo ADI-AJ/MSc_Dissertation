@@ -5,12 +5,24 @@ const API_TYPE = "GraphQL";
 const LOADING_TYPE = "Lazy";
 
 
+function getFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const parseIds = key => {
+        const value = params.get(key);
+        return value
+            ? value.split(",").map(Number).filter(n => !Number.isNaN(n))
+            : [];
+    };
+
+    return {
+        genres: parseIds("genres"),
+        directors: parseIds("directors"),
+        cast: parseIds("cast")
+    };
+}
+
 let currentOffset = 0;
-let activeFilters = {
-    genres: [],
-    directors: [],
-    cast: []
-};
+let activeFilters = getFiltersFromURL();
 
 let isLoading = false;
 let hasMoreMovies = true;
@@ -99,6 +111,28 @@ function renderAllFilters(data) {
         const items = data[def.key] || [];
         const filterGroup = createFilterDropdown(def, items);
         container.appendChild(filterGroup);
+    });
+
+    reflectURLFiltersInCheckboxes();
+}
+
+function reflectURLFiltersInCheckboxes() {
+    const urlFilters = getFiltersFromURL();
+
+    filterDefinitions.forEach(def => {
+        const ids = urlFilters[def.key];
+        if (!ids.length) return;
+
+        document.querySelectorAll(`input[name="${def.key}"]`).forEach(box => {
+            if (ids.includes(Number(box.value))) {
+                box.checked = true;
+            }
+        });
+
+        const wrapper = document.querySelector(`.filterGroup[data-filter-key="${def.key}"]`);
+        if (wrapper) {
+            updateDropdownLabel(wrapper, def.label);
+        }
     });
 }
 
@@ -520,13 +554,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     loadFilterOptions();
 
-    const EMPTY_FILTERS = {
-    genres: [],
-    directors: [],
-    cast: []
-    };
-    
-    await retrieveMovieDetails(EMPTY_FILTERS, true);
+    await retrieveMovieDetails(getFiltersFromURL(), true);
 
     setupInfiniteScroll();
 });

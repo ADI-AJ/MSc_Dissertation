@@ -3,6 +3,22 @@ const IMAGE_URL = "https://image.tmdb.org/t/p/w92/";
 const API_TYPE = "GraphQL";
 const LOADING_TYPE = "Eager";
 
+function getFiltersFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const parseIds = key => {
+        const value = params.get(key);
+        return value
+            ? value.split(",").map(Number).filter(n => !Number.isNaN(n))
+            : [];
+    };
+
+    return {
+        genres: parseIds("genres"),
+        directors: parseIds("directors"),
+        cast: parseIds("cast")
+    };
+}
+
 const filterDefinitions = [
     {
         key: 'genres',
@@ -84,6 +100,28 @@ function renderAllFilters(data) {
         const items = data[def.key] || [];
         const filterGroup = createFilterDropdown(def, items);
         container.appendChild(filterGroup);
+    });
+
+    reflectURLFiltersInCheckboxes();
+}
+
+function reflectURLFiltersInCheckboxes() {
+    const urlFilters = getFiltersFromURL();
+
+    filterDefinitions.forEach(def => {
+        const ids = urlFilters[def.key];
+        if (!ids.length) return;
+
+        document.querySelectorAll(`input[name="${def.key}"]`).forEach(box => {
+            if (ids.includes(Number(box.value))) {
+                box.checked = true;
+            }
+        });
+
+        const wrapper = document.querySelector(`.filterGroup[data-filter-key="${def.key}"]`);
+        if (wrapper) {
+            updateDropdownLabel(wrapper, def.label);
+        }
     });
 }
 
@@ -406,8 +444,4 @@ async function sendFrontendMetrics() {
 }
 
 loadFilterOptions();
-retrieveMovieDetails({
-    genres: [],
-    directors: [],
-    cast: []
-});
+retrieveMovieDetails(getFiltersFromURL());
