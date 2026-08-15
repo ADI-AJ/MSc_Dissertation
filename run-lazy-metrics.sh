@@ -24,9 +24,13 @@ RUNS=30
 INTERVAL_SECONDS=5
 HEADLESS=true
 
-GENRE_FILTER=""
+# GENRE_FILTER=""
+# DIRECTOR_FILTER=""
+# CAST_FILTER=""
+
+GENRE_FILTER="Animation"
 DIRECTOR_FILTER=""
-CAST_FILTER=""
+CAST_FILTER="Mel Blanc"
 
 # Example filter combination discussed for max non-trivial overlap:
 # GENRE_FILTER="Animation"

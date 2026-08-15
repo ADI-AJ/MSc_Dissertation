@@ -1,5 +1,5 @@
 const API_URL = "http://localhost:4000";
-const IMAGE_URL = "https://image.tmdb.org/t/p/original/";
+const IMAGE_URL = "https://image.tmdb.org/t/p/w92/";
 const API_TYPE = "REST";
 const LOADING_TYPE = "Lazy";
 const PAGE_SIZE = 20;
@@ -258,7 +258,9 @@ function renderMovies(movies, append = false) {
     }  
 
     if (movies.length === 0) {
-        movieList.innerHTML = `<div class="noResults">No movies found</div>`;
+        if (!append) {
+            movieList.innerHTML = `<div class="noResults">No movies found</div>`;
+        }
         return;
     }
 
