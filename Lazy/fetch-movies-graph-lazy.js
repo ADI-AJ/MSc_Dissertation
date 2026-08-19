@@ -248,7 +248,6 @@ async function retrieveMovieDetails(filters = activeFilters, reset = false) {
 
             movies(filters:$filters, limit:$limit, offset:$offset){
 
-                movie_id
                 original_title
                 release_date
                 runtime

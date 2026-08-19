@@ -114,7 +114,6 @@ module.exports = {
             const movies = await Movie.findAll({
 
                 attributes: [
-                    "movie_id",
                     "original_title",
                     "average_rating",
                     "status",

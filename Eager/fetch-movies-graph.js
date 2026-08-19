@@ -227,7 +227,6 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
                     limit:$limit,
                     offset:$offset
                 ) {
-                    movie_id
                     original_title
                     release_date
                     runtime

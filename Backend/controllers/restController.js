@@ -168,7 +168,9 @@ const fetchMovies = async (req, res) => {
                 "average_rating",
                 "revenue",
                 "status",
-                "poster_path"
+                "poster_path",
+                "budget",
+                "overview"
 
             ],
 
