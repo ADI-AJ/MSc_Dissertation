@@ -157,9 +157,7 @@ const fetchMovies = async (req, res) => {
         }
 
         const movies = await Movie.findAll({
-
             attributes: [
-
                 "movie_id",
                 "original_title",
                 "release_date",
@@ -171,24 +169,15 @@ const fetchMovies = async (req, res) => {
                 "poster_path",
                 "budget",
                 "overview"
-
             ],
-
             include,
-
             distinct: true,
-
             subQuery: false,
-
             limit,
             offset,
-
             order: [
-
                 ["original_title", "ASC"]
-
             ]
-
         });
         
         res.json(movies);

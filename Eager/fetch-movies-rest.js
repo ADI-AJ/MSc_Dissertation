@@ -3,7 +3,7 @@ const IMAGE_URL = "https://image.tmdb.org/t/p/w92/";
 
 const API_TYPE = "REST"
 const LOADING_TYPE = "Eager"
-const EAGER_LIMIT = 15000;
+const EAGER_LIMIT = 20000;// const EAGER_LIMIT = 15000;
 const EMPTY_FILTERS = {
     genres: [],
     directors: [],

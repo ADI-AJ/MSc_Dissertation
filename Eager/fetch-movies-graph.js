@@ -241,7 +241,7 @@ async function retrieveMovieDetails(filters = { genres: [], directors: [], cast:
 
         const data = await graphqlRequest(query, { 
             filters,
-            limit: 15000,
+            limit: 20000,// limit: 15000,
             offset:0 
         });
         renderMovies(data.movies);
