@@ -7,9 +7,7 @@ const backendCsv = path.join(metricsFolder, "backend_metrics.csv");
 const CSV_HEADER = "RequestNo,Timestamp,API,LoadingType,Method,Endpoint,StatusCode,ResponseTime(ms),ResponseSize(Bytes)\n";
 
 /*
-|--------------------------------------------------------------------------
-| Ensure metrics folder and CSV exist
-|--------------------------------------------------------------------------
+Ensure metrics folder and CSV exist
 */
 
 function ensureBackendCsv() {
@@ -22,9 +20,8 @@ function ensureBackendCsv() {
 }
 
 /*
-|--------------------------------------------------------------------------
-| Get next request number
-|--------------------------------------------------------------------------
+Get next request number
+
 */
 
 function getNextRequestNumber() {
@@ -41,9 +38,7 @@ function getNextRequestNumber() {
 }
 
 /*
-|--------------------------------------------------------------------------
-| Append metrics
-|--------------------------------------------------------------------------
+Append metrics
 */
 
 function logBackendMetrics(data) {

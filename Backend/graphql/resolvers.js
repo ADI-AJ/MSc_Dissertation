@@ -21,31 +21,16 @@ module.exports = {
 
                 Genre.findAll({
                     attributes: ["genre_id", "genre_name"],
-                    // include: {
-                    //     model: Movie,
-                    //     attributes: [],
-                    //     through: { attributes: [] }
-                    // },
                     order: [["genre_name", "ASC"]]
                 }),
 
                 Director.findAll({
                     attributes: ["director_id", "director_name"],
-                    // include: {
-                    //     model: Movie,
-                    //     attributes: [],
-                    //     through: { attributes: [] }
-                    // },
                     order: [["director_name", "ASC"]]
                 }),
 
                 CastMember.findAll({
                     attributes: ["cast_id", "cast_name"],
-                    // include: {
-                    //     model: Movie,
-                    //     attributes: [],
-                    //     through: { attributes: [] }
-                    // },
                     order: [["cast_name", "ASC"]]
                 })
 

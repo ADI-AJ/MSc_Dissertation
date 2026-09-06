@@ -6,17 +6,15 @@
 # each in a fresh, cache-cleared browser context, generating rows in
 # metrics/backend_metrics.csv and metrics/frontend_metrics.csv.
 #
-# Requires the Backend server to already be running (npm start / node server.js
-# inside Backend/) - this script does not start it for you.
+# Requires the Backend server to already be running (node server.js)
+# This script does not start it.
 #
-# Edit the variables below whenever you want to change the run count, the
+# Edit the variables below to change the run count, the
 # wait between runs, headless mode, or the filters applied. Leave a filter
 # variable empty ("") to not apply that filter at all.
 #
 # Filter values are matched by NAME (case-insensitive), exactly as they
 # appear in the app's filter dropdowns - e.g. GENRE_FILTER="Animation".
-# Multiple values for the same filter type can be comma-separated, e.g.
-# CAST_FILTER="Mel Blanc,Tom Hanks".
 
 # --- Editable settings -------------------------------------------------
 
@@ -36,7 +34,6 @@ HEADLESS=true
 # DIRECTOR_FILTER=""
 # CAST_FILTER="Mel Blanc"
 
-# Example filter combination discussed for max non-trivial overlap:
 GENRE_FILTER="Animation"
 DIRECTOR_FILTER="Friz Freleng"
 CAST_FILTER="Mel Blanc"

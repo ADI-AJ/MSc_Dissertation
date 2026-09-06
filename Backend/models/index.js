@@ -8,9 +8,7 @@ const MovieDirector = require("./MovieDirector");
 const MovieCast = require("./MovieCast");
 
 /*
-|--------------------------------------------------------------------------
-| Associations
-|--------------------------------------------------------------------------
+Associations
 */
 
 Movie.belongsToMany(Genre, {

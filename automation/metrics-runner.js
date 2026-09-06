@@ -1,33 +1,3 @@
-/*
-|--------------------------------------------------------------------------
-| metrics-runner.js
-|--------------------------------------------------------------------------
-|
-| Puppeteer-driven benchmark runner. Not called directly - invoked by
-| run-eager-metrics.sh / run-lazy-metrics.sh, which set the env vars below.
-|
-| For RUNS iterations, this script:
-|   1. opens a brand-new (empty-cache) browser context
-|   2. navigates to PAGE_HTML_PATH with the resolved filters in the URL
-|      query string (?genres=..&directors=..&cast=..)
-|   3. waits for the page's own POST to /frontend-metrics to complete
-|      (that POST is what makes backend_metrics.csv / frontend_metrics.csv
-|      grow - see Backend/controllers/metricsController.js)
-|   4. closes that context (dropping its cache/cookies) and waits
-|      INTERVAL_SECONDS before starting the next run
-|
-| Env vars (all optional except PAGE_HTML_PATH):
-|   PAGE_HTML_PATH   absolute path to the .html file to open      (required)
-|   API_BASE         backend base URL                             (default http://localhost:4000)
-|   RUNS             number of iterations                         (default 30)
-|   INTERVAL_SECONDS pause between runs, in seconds                (default 5)
-|   HEADLESS         "true" | "false"                              (default true)
-|   LABEL            label used in console output                 (default PAGE_HTML_PATH)
-|   GENRE_FILTER     comma-separated genre name(s), or empty       (default "")
-|   DIRECTOR_FILTER  comma-separated director name(s), or empty    (default "")
-|   CAST_FILTER      comma-separated cast member name(s), or empty (default "")
-|
-*/
 
 const path = require("path");
 const puppeteer = require("puppeteer");
@@ -160,10 +130,6 @@ async function runOnce(browser, url, runNumber) {
             }
         }, 100);
 
-        // Safety timeout well above the page's own 10s image-wait cap.
-        // Large unfiltered Eager runs (up to EAGER_LIMIT movies) can spend a
-        // long time just synchronously rendering DOM cards before that 10s
-        // timer even starts, so this needs a generous margin.
         setTimeout(() => {
             clearInterval(check);
             resolve();
